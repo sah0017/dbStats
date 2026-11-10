@@ -1,0 +1,32 @@
+# authors.mailmap
+#
+# Merges the different names and emails one person commits under into a
+# single identity. git_authorship.py applies this file automatically to every
+# repository it analyzes, on top of the repository's own .mailmap. Student
+# repositories are never modified.
+#
+# Format (one line per alias; see `git help gitmailmap`):
+#
+#   Proper Name <proper@email>  <alias@email>
+#   Proper Name <proper@email>  Alias Name <alias@email>
+#
+# The left side is how the person is reported. The right side is the identity
+# to replace. Matching is on email, and on name too when a name is given.
+#
+# To find aliases in a repo:
+#   git -C <repo> log --format='%aN <%aE>' | sort | uniq -c
+#   git -C <repo> log --format='%(trailers:key=Co-authored-by,valueonly)' | sort -u
+#
+# Cloud coding agents (Copilot coding agent, Claude on GitHub) name the student
+# as <username>@users.noreply.github.com, sometimes as
+# <id>+<username>@users.noreply.github.com. Map both forms when in doubt.
+
+# --- Instructor -----------------------------------------------------------
+Susan Hammond <sahammond@lipscomb.edu>  <1664398+sah0017@users.noreply.github.com>
+Susan Hammond <sahammond@lipscomb.edu>  <sah0017@users.noreply.github.com>
+
+# --- Students -------------------------------------------------------------
+# Add entries as aliases are discovered, for example:
+# Jane Student <jstudent@mail.lipscomb.edu>  <jstudent-gh@users.noreply.github.com>
+# Jane Student <jstudent@mail.lipscomb.edu>  <12345678+jstudent-gh@users.noreply.github.com>
+# Jane Student <jstudent@mail.lipscomb.edu>  jstudent-gh <jstudent@mail.lipscomb.edu>
