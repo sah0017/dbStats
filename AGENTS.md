@@ -24,6 +24,15 @@ Don't report her line count or percentage as part of the results. The script
 prints how many lines it excluded; that number can be mentioned only to show
 the exclusion was applied.
 
+### Other excluded non-students
+
+Exclude these people the same way, on every run, when they appear:
+
+- `stevenordstrom` (GitHub; commits as
+  `42621156+stevenordstrom@users.noreply.github.com`). Pass
+  `--exclude-author stevenordstrom`. `update_commit_stats.py` already
+  excludes him from line counts and pull request stats.
+
 ## Credit AI-agent work to the student who requested it
 
 Students may use Copilot or Claude to help write their projects. That work
@@ -57,7 +66,16 @@ python3 git_authorship.py <repo> --mode log --credit-bots \
 - **Committed virtual environment.** The base code's history includes a Python
   virtual environment under `lib/` and `bin/` (about 627,000 lines) that was
   committed and later deleted. Always exclude `lib/*`, `bin/*` and
-  `pyvenv.cfg` in `--mode log`, or the results are meaningless.
+  `pyvenv.cfg` in `--mode log`, or the results are meaningless. Do this only
+  for repositories built from that base code (their history contains
+  `pyvenv.cfg`). Other projects, such as the SoftwareStudio26 repositories,
+  keep real source code in `lib/`. `update_commit_stats.py` checks this
+  automatically.
+- **Package-manager lockfiles.** `package-lock.json`, `yarn.lock`,
+  `poetry.lock` and similar files are generated, often thousands of lines, and
+  credited to whoever ran the install. Always exclude them, for example
+  `--exclude package-lock.json --exclude '*/package-lock.json'`.
+  `update_commit_stats.py` excludes the common ones automatically.
 - **Duplicate files.** Students sometimes commit the same SQL under two
   filenames, which counts their work twice. Check for files with identical
   content and report the de-duplicated count alongside the raw count.
@@ -119,11 +137,22 @@ python3 update_commit_stats.py --repo Fall26RecipeMgmt   # one repo only
 
 - Pushing changes the students' GitHub repositories. Run without `--dry-run`
   only when the instructor asks for an update.
+- **Daily schedule:** the instructor asked for a daily update through
+  2026-12-11. The LaunchAgent
+  `~/Library/LaunchAgents/edu.lipscomb.sahammond.dbstats.plist` runs
+  `daily_stats.sh` at 6:00 AM for `Fall26DB` and `SoftwareStudio26`, with one
+  log per day in `logs/`. After the end date it removes itself. Check the
+  logs for skipped repositories and pull request links.
 - A repository is skipped, not modified, if it has uncommitted changes, isn't
   on a branch with an upstream, or can't be fast-forwarded. Report skipped
   repositories and their reasons; don't force, stash or reset anything.
 - Commits are made as the instructor, so they're excluded from future counts
   automatically.
+- If a branch only accepts changes through a pull request (for example LUKE2),
+  the script pushes the commit to an `update-commit-stats` branch, opens a
+  pull request (or updates the open one), and resets the local branch to its
+  upstream so later pulls still work. Report the pull request link; someone
+  has to merge it on GitHub.
 
 `commitStats.md` has two tables:
 
